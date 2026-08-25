@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Data</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .login-box {
+            width: 350px;
+            max-width: 90%;
+            margin: 120px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        .login-box h2 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        #error {
+            color: red;
+            margin-top: 12px;
+        }
+
+        #content {
+            display: none;
+            padding: 30px;
+        }
+
+        .sheet-container {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- LOGIN -->
+    <div class="login-box" id="loginBox">
+        <h2>🔒 Private Page</h2>
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter password"
+        >
+
+        <button onclick="login()">Login</button>
+
+        <div id="error"></div>
+    </div>
+
+
+    <!-- PROTECTED CONTENT -->
+    <div id="content">
+
+        <h1>My Google Spreadsheet</h1>
+
+        <div class="sheet-container">
+
+            <!-- Replace this URL with your Google Sheet embed URL -->
+         <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vSeuVxoKSjhg9_-prg067bp6QO-JshKd66SJT56lajb9XKlfgnE4bGVQ4ECdvTf3kfdAXfef39n-m0P/pubhtml?gid=0&amp;single=true&amp;widget=true&amp;headers=false" style="width: 1500px;height:2000px;"></iframe>
+
+        </div>
+
+    </div>
+
+
+    <script>
+        function login() {
+
+            // Change this to your password
+            const correctPassword = "123456";
+
+            const enteredPassword =
+                document.getElementById("password").value;
+
+            if (enteredPassword === correctPassword) {
+
+                document.getElementById("loginBox").style.display = "none";
+                document.getElementById("content").style.display = "block";
+
+            } else {
+
+                document.getElementById("error").textContent =
+                    "Incorrect password.";
+
+            }
+        }
+
+        // Allow pressing Enter to login
+        document.getElementById("password").addEventListener("keydown", function(event) {
+            if (event.key === "Enter") {
+                login();
+            }
+        });
+    </script>
+
+</body>
+</html>
