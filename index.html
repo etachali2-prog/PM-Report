@@ -4,8 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Inspection Schedule</title>
+<title>Inspection Schedule Display</title>
 
 <style>
 * {
@@ -17,7 +16,6 @@ body {
     padding: 20px;
     font-family: Arial, sans-serif;
     background: #eef2f6;
-    color: #222;
 }
 
 h2 {
@@ -26,26 +24,27 @@ h2 {
 }
 
 .cont {
-    background: #0c0b12;
+    background: rgb(12, 11, 18);
+    min-height: 260px;
     width: 100%;
-    max-width: 650px;
+    max-width: 603px;
     margin: auto;
     text-align: center;
     color: goldenrod;
-    padding: 15px 8px;
+    padding: 15px 5px;
     border-radius: 8px;
 }
 
 .blocks {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 4px;
+    gap: 2px;
     margin-top: 15px;
 }
 
 .block {
     min-width: 0;
-    min-height: 200px;
+    min-height: 190px;
     padding: 8px 4px;
     border: 1px solid #aaa;
     background: aliceblue;
@@ -61,91 +60,37 @@ h2 {
     width: 100%;
     min-width: 0;
     margin-top: 12px;
-    padding: 8px 3px;
+    padding: 7px 3px;
     border: 1px solid #bbb;
-    border-radius: 4px;
+    border-radius: 3px;
     background: white;
     color: #222;
     font-size: 13px;
 }
 
-.block input:disabled {
-    opacity: 1;
-    -webkit-text-fill-color: #222;
-}
-
-.entry {
-    max-width: 650px;
-    margin: 22px auto;
-    padding: 18px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px #0001;
-}
-
-.entry h3 {
-    margin-top: 0;
-    color: #172554;
-}
-
-.entry label {
-    display: block;
-    margin-top: 12px;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.entry input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #bbb;
-    border-radius: 4px;
-}
-
-.actions {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 18px auto;
-}
-
 button {
-    padding: 11px 18px;
+    margin: 15px 4px;
+    padding: 10px 18px;
+    background: #087f8c;
+    color: white;
     border: none;
     border-radius: 5px;
-    color: white;
-    background: #087f8c;
     cursor: pointer;
-}
-
-button:hover {
-    opacity: 0.85;
-}
-
-.submit-btn {
-    background: #155eef;
-}
-
-.print-btn {
-    background: #15803d;
 }
 
 #status {
     text-align: center;
-    margin: 15px auto;
+    color: #333;
     overflow-wrap: anywhere;
 }
 
-@media (max-width: 450px) {
+@media(max-width:450px) {
     body {
         padding: 8px;
     }
 
     .block {
-        padding: 6px 2px;
-        font-size: 12px;
+        padding: 5px 2px;
     }
 
     .block input {
@@ -155,13 +100,12 @@ button:hover {
 }
 
 @media print {
-    .entry, .actions, #status {
+    button {
         display: none;
     }
 
     body {
         background: white;
-        padding: 0;
     }
 }
 </style>
@@ -171,7 +115,6 @@ button:hover {
 
 <h2>Inspection Schedule</h2>
 
-<!-- DISPLAY DATA FROM GOOGLE SHEETS -->
 <div class="cont">
     Inspection Schedule
 
@@ -179,111 +122,41 @@ button:hover {
 
         <div class="block">
             <u>Block-D</u>
-            <input id="d1" placeholder="D1" disabled>
-            <input id="d2" placeholder="D2" disabled>
-            <input id="d3" placeholder="D3" disabled>
-            <input id="d4" placeholder="D4" disabled>
+            <input id="d1" placeholder="D1" readonly>
+            <input id="d2" placeholder="D2" readonly>
+            <input id="d3" placeholder="D3" readonly>
+            <input id="d4" placeholder="D4" readonly>
         </div>
 
         <div class="block">
             <u>Block-C</u>
-            <input id="c1" placeholder="C1" disabled>
-            <input id="c2" placeholder="C2" disabled>
-            <input id="c3" placeholder="C3" disabled>
-            <input id="c4" placeholder="C4" disabled>
+            <input id="c1" placeholder="C1" readonly>
+            <input id="c2" placeholder="C2" readonly>
+            <input id="c3" placeholder="C3" readonly>
+            <input id="c4" placeholder="C4" readonly>
         </div>
 
         <div class="block">
             <u>Others</u>
-            <input id="o1" placeholder="O1" disabled>
-            <input id="o2" placeholder="O2" disabled>
-            <input id="o3" placeholder="O3" disabled>
-            <input id="o4" placeholder="O4" disabled>
+            <input id="o1" placeholder="O1" readonly>
+            <input id="o2" placeholder="O2" readonly>
+            <input id="o3" placeholder="O3" readonly>
+            <input id="o4" placeholder="O4" readonly>
         </div>
 
     </div>
 </div>
 
-<div class="actions">
-    <button type="button" onclick="loadInspection()">
-        Refresh Data
-    </button>
-
-    <button type="button" class="print-btn"
-            onclick="window.print()">
-        Print / Save PDF
-    </button>
+<div style="text-align:center">
+    <button onclick="loadData()">Refresh Data</button>
+    <button onclick="window.print()">Print</button>
 </div>
 
-<p id="status">Connecting to Google Sheets...</p>
-
-<!-- FORM TO SAVE NEW INSPECTION DATA -->
-<div class="entry">
-    <h3>Enter Inspection Schedule</h3>
-
-    <form id="inspectionForm"
-          action="https://script.google.com/macros/s/AKfycbxv4rAp_E6bEUGhwGYzn-7bRuP6wMpJTnUBavJTxudMNasTSpqjqh4-EfUejcCEydPHhg/exec"
-          method="POST"
-          target="submitFrame">
-
-        <h4>Block-D</h4>
-
-        <label for="form_d1">D1</label>
-        <input id="form_d1" name="d1">
-
-        <label for="form_d2">D2</label>
-        <input id="form_d2" name="d2">
-
-        <label for="form_d3">D3</label>
-        <input id="form_d3" name="d3">
-
-        <label for="form_d4">D4</label>
-        <input id="form_d4" name="d4">
-
-        <h4>Block-C</h4>
-
-        <label for="form_c1">C1</label>
-        <input id="form_c1" name="c1">
-
-        <label for="form_c2">C2</label>
-        <input id="form_c2" name="c2">
-
-        <label for="form_c3">C3</label>
-        <input id="form_c3" name="c3">
-
-        <label for="form_c4">C4</label>
-        <input id="form_c4" name="c4">
-
-        <h4>Others</h4>
-
-        <label for="form_o1">O1</label>
-        <input id="form_o1" name="o1">
-
-        <label for="form_o2">O2</label>
-        <input id="form_o2" name="o2">
-
-        <label for="form_o3">O3</label>
-        <input id="form_o3" name="o3">
-
-        <label for="form_o4">O4</label>
-        <input id="form_o4" name="o4">
-
-        <div class="actions">
-            <button class="submit-btn" type="submit" id="submitBtn">
-                Save Inspection
-            </button>
-        </div>
-    </form>
-</div>
-
-<!-- Hidden frame lets the form submit without leaving this page -->
-<iframe name="submitFrame" id="submitFrame"
-        title="Form submission"
-        style="display:none"></iframe>
+<p id="status">Loading saved inspection data...</p>
 
 <script>
 const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwLl3rBFb8vaEznvF-QoT6FeNDshE6e-8FOGOcQa6nlq9d82AOlDf5UtXDmU1_QJ3NDZA/exec";
+"https://script.google.com/macros/s/AKfycbz3S6wFeWV-CBQZUr_ip5WtYhfUlEnGLMQpfOjiT29Sb9zu1bMVOCPFaiG6-T0g6TxfpA/exec";
 
 const fields = [
     "d1", "d2", "d3", "d4",
@@ -291,85 +164,80 @@ const fields = [
     "o1", "o2", "o3", "o4"
 ];
 
-// Read the latest saved record from Google Sheets.
-async function loadInspection() {
+async function loadData() {
     const status = document.getElementById("status");
-    status.textContent = "Loading Google Sheets data...";
+    status.textContent = "Loading data...";
 
     try {
         const response = await fetch(SCRIPT_URL);
 
         if (!response.ok) {
-            throw new Error("HTTP error: " + response.status);
+            throw new Error("HTTP error " + response.status);
         }
 
         const result = await response.json();
 
+        // Format 1: Apps Script returns {success:true, data:{d1:...}}
         if (result.success === false || result.error) {
             throw new Error(result.message || result.error);
         }
 
-        // Supports the object returned by the supplied Code.gs.
-        const data = result.data;
+        let record = result.data || result;
 
-        if (!data) {
-            fields.forEach(field => {
-                document.getElementById(field).value = "";
-            });
+        // Format 2: Apps Script returns the whole sheet as a 2D array.
+        if (Array.isArray(result)) {
+            if (result.length < 2) {
+                throw new Error("No saved records found.");
+            }
 
-            status.textContent = "No inspection record saved yet.";
-            return;
+            const headers = result[0].map(value =>
+                String(value).trim().toLowerCase()
+            );
+
+            record = result.slice(1).reverse().find(row =>
+                fields.some(field => {
+                    const index = headers.indexOf(field);
+                    return index >= 0 &&
+                        String(row[index] ?? "").trim() !== "";
+                })
+            );
+
+            if (record) {
+                const mapped = {};
+
+                fields.forEach(field => {
+                    const index = headers.indexOf(field);
+                    mapped[field] =
+                        index >= 0 ? record[index] : "";
+                });
+
+                record = mapped;
+            }
+        }
+
+        if (!record) {
+            throw new Error("No saved inspection record found.");
         }
 
         fields.forEach(field => {
             document.getElementById(field).value =
-                data[field] ?? "";
+                record[field] ?? "";
         });
 
         status.textContent =
-            "Latest inspection record loaded successfully.";
+            "Inspection data loaded successfully.";
 
     } catch (error) {
         console.error("Loading error:", error);
 
         status.textContent =
-            "Unable to load data. Check the script deployment, " +
-            "sheet name and browser console.";
+            "Unable to load Google Sheets data. Check your " +
+            "Apps Script doGet() function, deployment, sheet name, " +
+            "and browser console.";
     }
 }
 
-// Submit the form without navigating away from this page.
-const form = document.getElementById("inspectionForm");
-const submitBtn = document.getElementById("submitBtn");
-const submitFrame = document.getElementById("submitFrame");
-
-let submitting = false;
-
-form.addEventListener("submit", function(event) {
-    if (submitting) {
-        event.preventDefault();
-        return;
-    }
-
-    submitting = true;
-    submitBtn.disabled = true;
-    submitBtn.textContent = "Saving...";
-    document.getElementById("status").textContent =
-        "Submitting inspection data...";
-
-    // The form is submitted to the hidden iframe.
-    // Refresh after a short delay to allow Sheets to update.
-    setTimeout(async function() {
-        await loadInspection();
-
-        submitting = false;
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Save Inspection";
-    }, 2500);
-});
-
-// Load existing data when the page opens.
-loadInspection();
+loadData();
 </script>
 
 </body>
