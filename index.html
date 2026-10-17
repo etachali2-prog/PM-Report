@@ -4,7 +4,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Inspection Schedule Display</title>
+
+<title>Inspection Schedule Records</title>
 
 <style>
 * {
@@ -12,233 +13,261 @@
 }
 
 body {
+    font-family: Arial, sans-serif;
+    background: #eef3f8;
     margin: 0;
     padding: 20px;
-    font-family: Arial, sans-serif;
-    background: #eef2f6;
+    color: #1f2937;
 }
 
-h2 {
-    text-align: center;
-    color: #172554;
-}
-
-.cont {
-    background: rgb(12, 11, 18);
-    min-height: 260px;
-    width: 100%;
-    max-width: 603px;
+.container {
+    max-width: 1400px;
     margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px #00000015;
+}
+
+h1 {
     text-align: center;
-    color: goldenrod;
-    padding: 15px 5px;
-    border-radius: 8px;
+    color: #123b69;
+    margin-bottom: 8px;
 }
 
-.blocks {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 2px;
-    margin-top: 15px;
+.subtitle {
+    text-align: center;
+    color: #64748b;
+    margin-bottom: 25px;
 }
 
-.block {
-    min-width: 0;
-    min-height: 190px;
-    padding: 8px 4px;
-    border: 1px solid #aaa;
-    background: aliceblue;
-    color: #222;
-}
-
-.block:first-child {
-    background: white;
-}
-
-.block input {
-    display: block;
-    width: 100%;
-    min-width: 0;
-    margin-top: 12px;
-    padding: 7px 3px;
-    border: 1px solid #bbb;
-    border-radius: 3px;
-    background: white;
-    color: #222;
-    font-size: 13px;
+.actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
 }
 
 button {
-    margin: 15px 4px;
-    padding: 10px 18px;
-    background: #087f8c;
-    color: white;
     border: none;
-    border-radius: 5px;
+    padding: 11px 18px;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 15px;
+    color: white;
 }
 
-#status {
+.refresh {
+    background: #087f5b;
+}
+
+.print {
+    background: #145da0;
+}
+
+.table-container {
+    overflow-x: auto;
+    width: 100%;
+}
+
+table {
+    width: 100%;
+    min-width: 1100px;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #cbd5e1;
+    padding: 12px;
     text-align: center;
-    color: #333;
+    min-width: 100px;
     overflow-wrap: anywhere;
 }
 
-@media(max-width:450px) {
-    body {
-        padding: 8px;
-    }
+thead tr:first-child th {
+    color: white;
+    font-size: 16px;
+}
 
-    .block {
-        padding: 5px 2px;
-    }
+.group-d {
+    background: #145da0;
+}
 
-    .block input {
-        font-size: 11px;
-        padding: 6px 2px;
-    }
+.group-c {
+    background: #087f5b;
+}
+
+.group-o {
+    background: #7c3aed;
+}
+
+.subhead th {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+tbody tr:nth-child(even) {
+    background: #f1f5f9;
+}
+
+tbody tr:hover {
+    background: #dbeafe;
+}
+
+#status {
+    margin: 12px 0;
+    color: #475569;
 }
 
 @media print {
-    button {
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .container {
+        box-shadow: none;
+        padding: 0;
+    }
+
+    .actions {
         display: none;
     }
 
-    body {
-        background: white;
+    .table-container {
+        overflow: visible;
+    }
+
+    table {
+        min-width: 0;
+        font-size: 9px;
+    }
+
+    th, td {
+        padding: 5px 3px;
+        min-width: 0;
     }
 }
 </style>
 </head>
 
 <body>
+<div class="container">
 
-<h2>Inspection Schedule</h2>
+<h1>Inspection Schedule</h1>
+<p class="subtitle">Google Sheets — Saved Inspection Records</p>
 
-<div class="cont">
-    Inspection Schedule
-
-    <div class="blocks">
-
-        <div class="block">
-            <u>Block-D</u>
-            <input id="d1" placeholder="D1" readonly>
-            <input id="d2" placeholder="D2" readonly>
-            <input id="d3" placeholder="D3" readonly>
-            <input id="d4" placeholder="D4" readonly>
-        </div>
-
-        <div class="block">
-            <u>Block-C</u>
-            <input id="c1" placeholder="C1" readonly>
-            <input id="c2" placeholder="C2" readonly>
-            <input id="c3" placeholder="C3" readonly>
-            <input id="c4" placeholder="C4" readonly>
-        </div>
-
-        <div class="block">
-            <u>Others</u>
-            <input id="o1" placeholder="O1" readonly>
-            <input id="o2" placeholder="O2" readonly>
-            <input id="o3" placeholder="O3" readonly>
-            <input id="o4" placeholder="O4" readonly>
-        </div>
-
-    </div>
+<div class="actions">
+    <button class="refresh" onclick="loadData()">Refresh Data</button>
+    <button class="print" onclick="window.print()">Print / Save PDF</button>
 </div>
 
-<div style="text-align:center">
-    <button onclick="loadData()">Refresh Data</button>
-    <button onclick="window.print()">Print</button>
+<p id="status">Loading data...</p>
+
+<div class="table-container">
+<table>
+    <thead>
+        <tr>
+            <th rowspan="2">No.</th>
+            <th colspan="4" class="group-d">Block-D</th>
+            <th colspan="4" class="group-c">Block-C</th>
+            <th colspan="4" class="group-o">Others</th>
+        </tr>
+        <tr class="subhead">
+            <th>d1</th><th>d2</th><th>d3</th><th>d4</th>
+            <th>c1</th><th>c2</th><th>c3</th><th>c4</th>
+            <th>o1</th><th>o2</th><th>o3</th><th>o4</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+</table>
 </div>
 
-<p id="status">Loading saved inspection data...</p>
+</div>
 
 <script>
 const SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwrWsciw2ZviCIJ-kFLaEHGnlE8T1H8hKnvteqXib7Tm5sgLidxN6eq7u09g-H-p0Zakw/exec";
+"https://script.google.com/macros/s/AKfycbz3S6wFeWV-CBQZUr_ip5WtYhfUlEnGLMQpfOjiT29Sb9zu1bMVOCPFaiG6-T0g6TxfpA/exec";
 
-const fields = [
-    "d1", "d2", "d3", "d4",
-    "c1", "c2", "c3", "c4",
-    "o1", "o2", "o3", "o4"
-];
-
-async function loadData() {
+function loadData() {
     const status = document.getElementById("status");
-    status.textContent = "Loading data...";
+    const tbody = document.getElementById("tableBody");
 
-    try {
-        const response = await fetch(SCRIPT_URL);
+    status.textContent = "Loading Google Sheets data...";
+    tbody.replaceChildren();
 
-        if (!response.ok) {
-            throw new Error("HTTP error " + response.status);
+    // Unique callback name for this request
+    const callbackName =
+        "inspectionCallback_" + Date.now();
+
+    const script = document.createElement("script");
+
+    const timeout = setTimeout(() => {
+        cleanup();
+        status.textContent =
+            "Unable to load data. Check the Apps Script deployment and sheet name.";
+    }, 20000);
+
+    function cleanup() {
+        clearTimeout(timeout);
+        script.remove();
+        try {
+            delete window[callbackName];
+        } catch (e) {
+            window[callbackName] = undefined;
+        }
+    }
+
+    window[callbackName] = function(data) {
+        cleanup();
+
+        if (!Array.isArray(data)) {
+            status.textContent = "Unexpected data format.";
+            return;
         }
 
-        const result = await response.json();
+        // Skip the first row if it contains column headings
+        const rows = data.slice(1);
 
-        // Format 1: Apps Script returns {success:true, data:{d1:...}}
-        if (result.success === false || result.error) {
-            throw new Error(result.message || result.error);
+        if (rows.length === 0) {
+            status.textContent = "No saved records found.";
+            return;
         }
 
-        let record = result.data || result;
+        rows.forEach((row, index) => {
+            const tr = document.createElement("tr");
 
-        // Format 2: Apps Script returns the whole sheet as a 2D array.
-        if (Array.isArray(result)) {
-            if (result.length < 2) {
-                throw new Error("No saved records found.");
+            const numberCell = document.createElement("td");
+            numberCell.textContent = index + 1;
+            tr.appendChild(numberCell);
+
+            for (let col = 0; col < 12; col++) {
+                const td = document.createElement("td");
+                td.textContent = row[col] ?? "";
+                tr.appendChild(td);
             }
 
-            const headers = result[0].map(value =>
-                String(value).trim().toLowerCase()
-            );
-
-            record = result.slice(1).reverse().find(row =>
-                fields.some(field => {
-                    const index = headers.indexOf(field);
-                    return index >= 0 &&
-                        String(row[index] ?? "").trim() !== "";
-                })
-            );
-
-            if (record) {
-                const mapped = {};
-
-                fields.forEach(field => {
-                    const index = headers.indexOf(field);
-                    mapped[field] =
-                        index >= 0 ? record[index] : "";
-                });
-
-                record = mapped;
-            }
-        }
-
-        if (!record) {
-            throw new Error("No saved inspection record found.");
-        }
-
-        fields.forEach(field => {
-            document.getElementById(field).value =
-                record[field] ?? "";
+            tbody.appendChild(tr);
         });
 
         status.textContent =
-            "Inspection data loaded successfully.";
+            "Successfully displayed " + rows.length + " record(s).";
+    };
 
-    } catch (error) {
-        console.error("Loading error:", error);
-
+    script.onerror = function() {
+        cleanup();
         status.textContent =
-            "Unable to load Google Sheets data. Check your " +
-            "Apps Script doGet() function, deployment, sheet name, " +
-            "and browser console.";
-    }
+            "Could not connect. Check your Apps Script URL and deployment.";
+    };
+
+    script.src = SCRIPT_URL
+        + "?callback=" + encodeURIComponent(callbackName)
+        + "&t=" + Date.now();
+
+    document.body.appendChild(script);
 }
 
 loadData();
 </script>
-
 </body>
 </html>
